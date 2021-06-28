@@ -11,7 +11,7 @@ categories = ["web-programming", "api-bindings"]
 edition = "2018"
 
 [dependencies]
-base64 = "0.12"
+base64 = "0.13"
 lazy_static = "1"
 log = "0.4"
 openssl = "0.10"
@@ -24,4 +24,3 @@ ureq = "1"
 env_logger = { version = "0.7", default-features = false }
 futures = "0.1.25"
 hyper = "0.12"
-regex = "1.3"

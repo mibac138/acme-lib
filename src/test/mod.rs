@@ -2,13 +2,8 @@
 
 use futures::Future;
 use hyper::{service::service_fn_ok, Body, Method, Request, Response, Server};
-use lazy_static::lazy_static;
 use std::net::TcpListener;
 use std::thread;
-
-lazy_static! {
-    static ref RE_URL: regex::Regex = regex::Regex::new("<URL>").unwrap();
-}
 
 pub struct TestServer {
     pub dir_url: String,
@@ -34,7 +29,7 @@ fn get_directory(url: &str) -> Response<Body> {
         ]
     }
     }"#;
-    Response::new(Body::from(RE_URL.replace_all(BODY, url)))
+    Response::new(Body::from(BODY.replace("<URL>", url)))
 }
 
 fn head_new_nonce() -> Response<Body> {
@@ -66,7 +61,7 @@ fn post_new_acct(url: &str) -> Response<Body> {
     "createdAt": "2018-12-31T17:15:40.399104457Z",
     "status": "valid"
     }"#;
-    let location: String = RE_URL.replace_all("<URL>/acme/acct/7728515", url).into();
+    let location = "<URL>/acme/acct/7728515".replace("<URL>", url);
     Response::builder()
         .status(201)
         .header("Location", location)
@@ -89,13 +84,11 @@ fn post_new_order(url: &str) -> Response<Body> {
     ],
     "finalize": "<URL>/acme/finalize/7738992/18234324"
     }"#;
-    let location: String = RE_URL
-        .replace_all("<URL>/acme/order/YTqpYUthlVfwBncUufE8", url)
-        .into();
+    let location = "<URL>/acme/order/YTqpYUthlVfwBncUufE8".replace("<URL>", url);
     Response::builder()
         .status(201)
         .header("Location", location)
-        .body(Body::from(RE_URL.replace_all(BODY, url)))
+        .body(Body::from(BODY.replace("<URL>", url)))
         .unwrap()
 }
 
@@ -115,7 +108,7 @@ fn post_get_order(url: &str) -> Response<Body> {
     "finalize": "<URL>/acme/finalize/7738992/18234324",
     "certificate": "<URL>/acme/cert/fae41c070f967713109028"
     }"#;
-    let b = RE_URL.replace_all(BODY, url).to_string();
+    let b = BODY.replace("<URL>", url);
     Response::builder().status(200).body(Body::from(b)).unwrap()
 }
 
@@ -150,7 +143,7 @@ fn post_authz(url: &str) -> Response<Body> {
     }"#;
     Response::builder()
         .status(201)
-        .body(Body::from(RE_URL.replace_all(BODY, url)))
+        .body(Body::from(BODY.replace("<URL>", url)))
         .unwrap()
 }
 
