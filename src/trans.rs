@@ -108,7 +108,7 @@ impl NoncePool {
     pub fn new(nonce_url: &str) -> Self {
         NoncePool {
             nonce_url: nonce_url.into(),
-            ..Default::default()
+            pool: Mutex::new(VecDeque::with_capacity(11)),
         }
     }
 

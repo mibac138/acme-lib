@@ -8,8 +8,8 @@ use crate::trans::{NoncePool, Transport};
 use crate::util::read_json;
 use crate::{Account, Result};
 
-const LETS_ENCRYPT: &str = "https://acme-v02.api.letsencrypt.org/directory";
-const LETS_ENCRYPT_STAGING: &str = "https://acme-staging-v02.api.letsencrypt.org/directory";
+pub const LETS_ENCRYPT: &str = "https://acme-v02.api.letsencrypt.org/directory";
+pub const LETS_ENCRYPT_STAGING: &str = "https://acme-staging-v02.api.letsencrypt.org/directory";
 
 /// Entry point for accessing an ACME API.
 #[derive(Clone)]

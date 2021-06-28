@@ -25,9 +25,10 @@ pub(crate) fn req_post(url: &str, body: &str) -> ureq::Response {
 }
 
 fn req_configure(req: &mut ureq::Request) {
-    req.timeout_connect(30_000);
-    req.timeout_read(30_000);
-    req.timeout_write(30_000);
+    req.timeout_connect(30_000)
+        .timeout_read(30_000)
+        .timeout_write(30_000)
+        .set("User-Agent", "acme-lib (github.com/mibac138/acme-lib)");
 }
 
 pub(crate) fn req_handle_error(res: ureq::Response) -> ReqResult<ureq::Response> {
