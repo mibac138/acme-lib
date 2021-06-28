@@ -11,29 +11,6 @@ use crate::{Account, Result};
 const LETS_ENCRYPT: &str = "https://acme-v02.api.letsencrypt.org/directory";
 const LETS_ENCRYPT_STAGING: &str = "https://acme-staging-v02.api.letsencrypt.org/directory";
 
-/// Enumeration of known ACME API directories.
-#[derive(Debug, Clone)]
-pub enum DirectoryUrl<'a> {
-    /// The main Let's Encrypt directory. Not appropriate for testing and dev.
-    LetsEncrypt,
-    /// The staging Let's Encrypt directory. Use for testing and dev. Doesn't issue
-    /// "valid" certificates. The root signing certificate is not supposed
-    /// to be in any trust chains.
-    LetsEncryptStaging,
-    /// Provide an arbitrary director URL to connect to.
-    Other(&'a str),
-}
-
-impl<'a> DirectoryUrl<'a> {
-    fn to_url(&self) -> &str {
-        match self {
-            DirectoryUrl::LetsEncrypt => LETS_ENCRYPT,
-            DirectoryUrl::LetsEncryptStaging => LETS_ENCRYPT_STAGING,
-            DirectoryUrl::Other(s) => s,
-        }
-    }
-}
-
 /// Entry point for accessing an ACME API.
 #[derive(Clone)]
 pub struct Directory<P: Persist> {
@@ -44,9 +21,8 @@ pub struct Directory<P: Persist> {
 
 impl<P: Persist> Directory<P> {
     /// Create a directory over a persistence implementation and directory url.
-    pub fn from_url(persist: P, url: DirectoryUrl) -> Result<Directory<P>> {
-        let dir_url = url.to_url();
-        let res = req_handle_error(req_get(&dir_url))?;
+    pub fn from_url(persist: P, url: &str) -> Result<Directory<P>> {
+        let res = req_handle_error(req_get(&url))?;
         let api_directory: ApiDirectory = read_json(res)?;
         let nonce_pool = Arc::new(NoncePool::new(&api_directory.newNonce));
         Ok(Directory {
@@ -54,6 +30,14 @@ impl<P: Persist> Directory<P> {
             nonce_pool,
             api_directory,
         })
+    }
+
+    pub fn lets_encrypt(persist: P) -> Result<Directory<P>> {
+        Self::from_url(persist, LETS_ENCRYPT)
+    }
+
+    pub fn lets_encrypt_staging(persist: P) -> Result<Directory<P>> {
+        Self::from_url(persist, LETS_ENCRYPT_STAGING)
     }
 
     /// Access an account identified by a contact email.
@@ -161,18 +145,16 @@ mod test {
     #[test]
     fn test_create_directory() -> Result<()> {
         let server = crate::test::with_directory_server();
-        let url = DirectoryUrl::Other(&server.dir_url);
         let persist = MemoryPersist::new();
-        let _ = Directory::from_url(persist, url)?;
+        let _ = Directory::from_url(persist, &server.dir_url)?;
         Ok(())
     }
 
     #[test]
     fn test_create_acount() -> Result<()> {
         let server = crate::test::with_directory_server();
-        let url = DirectoryUrl::Other(&server.dir_url);
         let persist = MemoryPersist::new();
-        let dir = Directory::from_url(persist, url)?;
+        let dir = Directory::from_url(persist, &server.dir_url)?;
         let _ = dir.account("foo@bar.com")?;
         Ok(())
     }
@@ -180,9 +162,8 @@ mod test {
     #[test]
     fn test_persisted_acount() -> Result<()> {
         let server = crate::test::with_directory_server();
-        let url = DirectoryUrl::Other(&server.dir_url);
         let persist = MemoryPersist::new();
-        let dir = Directory::from_url(persist, url)?;
+        let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc1 = dir.account("foo@bar.com")?;
         let acc2 = dir.account("foo@bar.com")?;
         let acc3 = dir.account("karlfoo@bar.com")?;

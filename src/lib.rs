@@ -7,20 +7,17 @@
 //! # Example
 //!
 //! ```no_run
-//! use acme_lib::{Error, Directory, DirectoryUrl};
+//! use acme_lib::{Error, Directory};
 //! use acme_lib::persist::FilePersist;
 //! use acme_lib::create_p384_key;
 //!
 //! fn request_cert() -> Result<(), Error> {
 //!
-//! // Use DirectoryUrl::LetsEncrypStaging for dev/testing.
-//! let url = DirectoryUrl::LetsEncrypt;
-//!
 //! // Save/load keys and certificates to current dir.
 //! let persist = FilePersist::new(".");
 //!
-//! // Create a directory entrypoint.
-//! let dir = Directory::from_url(persist, url)?;
+//! // Create a directory entrypoint. Use `lets_encrypt_staging` for dev/testing.
+//! let dir = Directory::lets_encrypt(persist)?;
 //!
 //! // Reads the private account key from persistence, or
 //! // creates a new one before accessing the API to establish
@@ -170,5 +167,5 @@ mod test;
 
 pub use crate::acc::{Account, RevocationReason};
 pub use crate::cert::{create_p256_key, create_p384_key, create_rsa_key, Certificate};
-pub use crate::dir::{Directory, DirectoryUrl};
+pub use crate::dir::Directory;
 pub use crate::error::{Error, Result};

@@ -326,9 +326,8 @@ mod test {
     #[test]
     fn test_get_authorizations() -> Result<()> {
         let server = crate::test::with_directory_server();
-        let url = DirectoryUrl::Other(&server.dir_url);
         let persist = MemoryPersist::new();
-        let dir = Directory::from_url(persist, url)?;
+        let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
         let ord = acc.new_order("acmetest.example.com", &[])?;
         let _ = ord.authorizations()?;
@@ -338,9 +337,8 @@ mod test {
     #[test]
     fn test_finalize() -> Result<()> {
         let server = crate::test::with_directory_server();
-        let url = DirectoryUrl::Other(&server.dir_url);
         let persist = MemoryPersist::new();
-        let dir = Directory::from_url(persist, url)?;
+        let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
         let ord = acc.new_order("acmetest.example.com", &[])?;
         // shortcut auth
@@ -353,9 +351,8 @@ mod test {
     #[test]
     fn test_download_and_save_cert() -> Result<()> {
         let server = crate::test::with_directory_server();
-        let url = DirectoryUrl::Other(&server.dir_url);
         let persist = MemoryPersist::new();
-        let dir = Directory::from_url(persist, url)?;
+        let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
         let ord = acc.new_order("acmetest.example.com", &[])?;
 

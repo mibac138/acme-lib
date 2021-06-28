@@ -297,9 +297,8 @@ mod test {
     #[test]
     fn test_get_challenges() -> Result<()> {
         let server = crate::test::with_directory_server();
-        let url = DirectoryUrl::Other(&server.dir_url);
         let persist = MemoryPersist::new();
-        let dir = Directory::from_url(persist, url)?;
+        let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
         let ord = acc.new_order("acmetest.example.com", &[])?;
         let authz = ord.authorizations()?;
