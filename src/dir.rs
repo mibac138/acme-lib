@@ -1,4 +1,3 @@
-//
 use std::sync::Arc;
 
 use crate::acc::AcmeKey;
@@ -9,8 +8,8 @@ use crate::trans::{NoncePool, Transport};
 use crate::util::read_json;
 use crate::{Account, Result};
 
-const LETSENCRYPT: &str = "https://acme-v02.api.letsencrypt.org/directory";
-const LETSENCRYPT_STAGING: &str = "https://acme-staging-v02.api.letsencrypt.org/directory";
+const LETS_ENCRYPT: &str = "https://acme-v02.api.letsencrypt.org/directory";
+const LETS_ENCRYPT_STAGING: &str = "https://acme-staging-v02.api.letsencrypt.org/directory";
 
 /// Enumeration of known ACME API directories.
 #[derive(Debug, Clone)]
@@ -28,8 +27,8 @@ pub enum DirectoryUrl<'a> {
 impl<'a> DirectoryUrl<'a> {
     fn to_url(&self) -> &str {
         match self {
-            DirectoryUrl::LetsEncrypt => LETSENCRYPT,
-            DirectoryUrl::LetsEncryptStaging => LETSENCRYPT_STAGING,
+            DirectoryUrl::LetsEncrypt => LETS_ENCRYPT,
+            DirectoryUrl::LetsEncryptStaging => LETS_ENCRYPT_STAGING,
             DirectoryUrl::Other(s) => s,
         }
     }

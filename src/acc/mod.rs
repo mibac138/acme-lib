@@ -1,4 +1,3 @@
-//
 use std::sync::Arc;
 
 use crate::api::{ApiAccount, ApiDirectory, ApiIdentifier, ApiOrder, ApiRevocation};
