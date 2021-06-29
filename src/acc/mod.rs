@@ -115,10 +115,7 @@ impl<P: Persist> Account<P> {
     /// names supplied are exactly the same.
     ///
     /// [100 names]: https://letsencrypt.org/docs/rate-limits/
-    pub fn new_order(&self, primary_name: &str, alt_names: &[&str]) -> Result<NewOrder<P>> {
-        // construct the identifiers
-        let prim_arr = [primary_name];
-        let domains = prim_arr.iter().chain(alt_names);
+    pub fn new_order(&self, domains: impl Iterator<Item = String>) -> Result<NewOrder<P>> {
         let order = ApiOrder {
             identifiers: domains
                 .map(|s| ApiIdentifier {
@@ -128,6 +125,7 @@ impl<P: Persist> Account<P> {
                 .collect(),
             ..Default::default()
         };
+        assert!(order.identifiers.len() >= 1);
 
         let new_order_url = &self.inner.api_directory.newOrder;
 
@@ -194,7 +192,7 @@ mod test {
         let persist = MemoryPersist::new();
         let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
-        let _ = acc.new_order("acmetest.example.com", &[])?;
+        let _ = acc.new_order(std::iter::once("acmetest.example.com".to_string()))?;
         Ok(())
     }
 }

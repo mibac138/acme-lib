@@ -329,7 +329,7 @@ mod test {
         let persist = MemoryPersist::new();
         let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
-        let ord = acc.new_order("acmetest.example.com", &[])?;
+        let ord = acc.new_order(std::iter::once("acmetest.example.com".to_string()))?;
         let _ = ord.authorizations()?;
         Ok(())
     }
@@ -340,7 +340,7 @@ mod test {
         let persist = MemoryPersist::new();
         let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
-        let ord = acc.new_order("acmetest.example.com", &[])?;
+        let ord = acc.new_order(std::iter::once("acmetest.example.com".to_string()))?;
         // shortcut auth
         let ord = CsrOrder { order: ord.order };
         let pkey = cert::create_p256_key();
@@ -354,7 +354,7 @@ mod test {
         let persist = MemoryPersist::new();
         let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
-        let ord = acc.new_order("acmetest.example.com", &[])?;
+        let ord = acc.new_order(std::iter::once("acmetest.example.com".to_string()))?;
 
         // shortcut auth
         let ord = CsrOrder { order: ord.order };

@@ -300,9 +300,9 @@ mod test {
         let persist = MemoryPersist::new();
         let dir = Directory::from_url(persist, &server.dir_url)?;
         let acc = dir.account("foo@bar.com")?;
-        let ord = acc.new_order("acmetest.example.com", &[])?;
+        let ord = acc.new_order(std::iter::once("acmetest.example.com".to_string()))?;
         let authz = ord.authorizations()?;
-        assert!(authz.len() == 1);
+        assert_eq!(authz.len(), 1);
         let auth = &authz[0];
         {
             let http = auth.http_challenge();

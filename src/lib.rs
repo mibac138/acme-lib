@@ -25,7 +25,7 @@
 //! let acc = dir.account("foo@bar.com")?;
 //!
 //! // Order a new TLS certificate for a domain.
-//! let mut ord_new = acc.new_order("mydomain.io", &[])?;
+//! let mut ord_new = acc.new_order(std::iter::once("mydomain.io".to_string()))?;
 //!
 //! // If the ownership of the domain(s) have already been
 //! // authorized in a previous order, you might be able to
